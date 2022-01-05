@@ -10,6 +10,11 @@ RUN set -ex \
 
 COPY ./ /modules/
 
+# add custom run.sh
+COPY run.sh /tmp/packages/
+# add custom default nginx.conf
+COPY nginx.conf /tmp/packages/
+
 RUN set -ex \
     && apt update \
     && apt install -y --no-install-suggests --no-install-recommends \
@@ -56,11 +61,26 @@ RUN set -ex \
             exit 1; \
         fi; \
     done \
-    && echo "BUILT_MODULES=\"$BUILT_MODULES\"" > /tmp/packages/modules.env
+    && echo "BUILT_MODULES=\"$BUILT_MODULES\"" > /tmp/packages/modules.env \
+    # add skywalking-nginx-lua
+    chmod +x /tmp/packages/run.sh && \
+    git clone https://github.com/apache/skywalking-nginx-lua.git /tmp/packages/skywalking-nginx-lua && \
+    rm -rf /tmp/packages/skywalking-nginx-lua/.git*
 
-FROM nginx:mainline
+FROM nginx:1.21.5
+
+ENV NGINX=nginx \
+    NGINX_DIR=/etc/nginx \
+    NGINX_FILE=nginx.conf
+
 COPY --from=builder /tmp/packages /tmp/packages
+
 RUN set -ex \
+    # add skywalking-nginx-lua and custom file
+    && mkdir /var/run/nginx \
+    && mv /tmp/packages/nginx.conf /nginx.conf \
+    && mv /tmp/packages/run.sh /run.sh \
+    && /tmp/packages/skywalking-nginx-lua /skywalking-nginx-lua \
     && apt update \
     && . /tmp/packages/modules.env \
     && for module in $BUILT_MODULES; do \
@@ -68,3 +88,7 @@ RUN set -ex \
        done \
     && rm -rf /tmp/packages \
     && rm -rf /var/lib/apt/lists/
+
+ENTRYPOINT ["/run.sh"]
+
+CMD ["nginx", "-g", "daemon off;"]
