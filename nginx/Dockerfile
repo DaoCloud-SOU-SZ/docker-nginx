@@ -63,9 +63,9 @@ RUN set -ex \
     done \
     && echo "BUILT_MODULES=\"$BUILT_MODULES\"" > /tmp/packages/modules.env \
     # add skywalking-nginx-lua
-    chmod +x /tmp/packages/run.sh && \
-    git clone https://github.com/apache/skywalking-nginx-lua.git /tmp/packages/skywalking-nginx-lua && \
-    rm -rf /tmp/packages/skywalking-nginx-lua/.git*
+    && chmod +x /tmp/packages/run.sh \
+    && git clone https://github.com/apache/skywalking-nginx-lua.git /tmp/packages/skywalking-nginx-lua \
+    && rm -rf /tmp/packages/skywalking-nginx-lua/.git*
 
 FROM nginx:1.21.5
 
@@ -80,7 +80,7 @@ RUN set -ex \
     && mkdir /var/run/nginx \
     && mv /tmp/packages/nginx.conf /nginx.conf \
     && mv /tmp/packages/run.sh /run.sh \
-    && /tmp/packages/skywalking-nginx-lua /skywalking-nginx-lua \
+    && mv /tmp/packages/skywalking-nginx-lua /skywalking-nginx-lua \
     && apt update \
     && . /tmp/packages/modules.env \
     && for module in $BUILT_MODULES; do \
