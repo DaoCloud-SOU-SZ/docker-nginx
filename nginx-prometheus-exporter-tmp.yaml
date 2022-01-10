@@ -1,0 +1,52 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: dep-front-prometheus-exporter-dev
+  labels:
+    dce.daocloud.io/app: dcs-dep-front-dev-1
+    app: dep-front-prometheus-exporter-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      dce.daocloud.io/app: dcs-dep-front-dev-1
+      app: dep-front-prometheus-exporter-dev
+  template:
+    metadata:
+      name: dep-front-prometheus-exporter-dev
+      labels:
+        dce.daocloud.io/app: dcs-dep-front-dev-1
+        app: dep-front-prometheus-exporter-dev
+      annotations:
+        dce.daocloud.io/metrics-app: dep-aswatson-dev
+        dce.daocloud.io/metrics-enabled: 'true'
+        dce.daocloud.io/metrics-path: /metrics
+        dce.daocloud.io/metrics-port: '9113'
+        dce.daocloud.io/metrics-protocal: http
+        dce.daocloud.io/metrics-service-name: dep-front-dev
+    spec:
+      containers:
+        - name: dep-front-dev
+          image: '10.95.35.98/library/nginx-prometheus-exporter:0.10'
+          args:
+          - '--nginx.scrape-uri=http://dep-front-dev:8080/nginx_status'
+          ports:
+            - containerPort: 9113
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 100m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          imagePullPolicy: Always
+      restartPolicy: Always
+      dnsPolicy: ClusterFirst
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
