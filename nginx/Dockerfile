@@ -23,7 +23,7 @@ RUN set -ex \
                 equivs git g++ \
     && hg clone -r ${NGINX_VERSION}-${PKG_RELEASE%%~*} https://hg.nginx.org/pkg-oss/ \
     && cd pkg-oss \
-    && mkdir /tmp/packages \
+    #&& mkdir /tmp/packages \
     && for module in $ENABLED_MODULES; do \
         echo "Building $module for nginx-$NGINX_VERSION"; \
         if [ -d /modules/$module ]; then \
