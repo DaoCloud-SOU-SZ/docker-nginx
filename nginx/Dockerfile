@@ -1,3 +1,9 @@
+FROM nickblah/luajit:2.0.5-lua52compat-luarocks-ubuntu as lua
+
+RUN apt update \
+ && apt install gcc make git -y \
+ && luarocks install lua-cjson
+
 FROM nginx:stable as builder
 
 ARG ENABLED_MODULES
@@ -14,6 +20,8 @@ COPY ./ /modules/
 COPY run.sh /tmp/packages/
 # add custom default nginx.conf
 COPY nginx.conf /tmp/packages/
+
+COPY --from=lua /usr/local/lib/lua/5.1/cjson.so /tmp/packages/
 
 RUN set -ex \
     && apt update \
@@ -65,7 +73,8 @@ RUN set -ex \
     # add skywalking-nginx-lua
     && chmod +x /tmp/packages/run.sh \
     && git clone https://github.com/apache/skywalking-nginx-lua.git /tmp/packages/skywalking-nginx-lua \
-    && rm -rf /tmp/packages/skywalking-nginx-lua/.git*
+    && rm -rf /tmp/packages/skywalking-nginx-lua/.git* \
+    && git clone https://github.com/openresty/lua-tablepool.git /tmp/packages/lua-tablepool
 
 FROM nginx:stable
 
@@ -75,12 +84,17 @@ ENV NGINX_TYPE=nginx \
 
 COPY --from=builder /tmp/packages /tmp/packages
 
+#/usr/local/share/lua/5.1/tablepool.lua
+#/usr/local/lib/lua/5.1/cjson.so
 RUN set -ex \
     # add skywalking-nginx-lua and custom file
-    && mkdir /var/run/nginx \
+    && mkdir -p /var/run/nginx \
+    && mkdir -p /usr/local/lib/lua/5.1 \
     && mv /tmp/packages/nginx.conf /nginx.conf \
     && mv /tmp/packages/run.sh /run.sh \
     && mv /tmp/packages/skywalking-nginx-lua /skywalking-nginx-lua \
+    && mv /tmp/packages/cjson.so /usr/local/lib/lua/5.1/cjson.so \
+    && mv /tmp/packages/lua-tablepool/lib/tablepool.lua /usr/local/share/lua/5.1/tablepool.lua \
     && apt update \
     && . /tmp/packages/modules.env \
     && for module in $BUILT_MODULES; do \
