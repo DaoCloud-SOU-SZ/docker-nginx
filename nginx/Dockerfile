@@ -1,4 +1,4 @@
-FROM nginx:mainline as builder
+FROM nginx:stable as builder
 
 ARG ENABLED_MODULES
 
@@ -67,7 +67,7 @@ RUN set -ex \
     && git clone https://github.com/apache/skywalking-nginx-lua.git /tmp/packages/skywalking-nginx-lua \
     && rm -rf /tmp/packages/skywalking-nginx-lua/.git*
 
-FROM nginx:1.21.5
+FROM nginx:stable
 
 ENV NGINX_TYPE=nginx \
     NGINX_DIR=/etc/nginx \
