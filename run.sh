@@ -6,7 +6,7 @@ test -z "$TZ" && export TZ='Asia/Shanghai'
 if [ "$DX_TRACING_ENABLE" = "true" ]
 then
 
-    if [ "NGINX_TYPE" = "nginx" ]
+    if [ "$NGINX_TYPE" = "nginx" ]
     then
         sed -i '1i load_module modules/ngx_stream_lua_module.so;' nginx.conf
         sed -i '1i load_module modules/ngx_http_lua_module.so;' nginx.conf
