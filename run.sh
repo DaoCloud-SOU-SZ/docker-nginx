@@ -17,7 +17,7 @@ then
     # sed -i "s%\${DX_APP_ID}%${DX_APP_ID}%g" $NGINX_DIR/$NGINX_FILE
     # sed -i "s%\${DX_SERVICE_ID}%${DX_SERVICE_ID}%g" $NGINX_DIR/$NGINX_FILE
 
-    sed -i "s%\${NGINX}%${NGINX}%g" $NGINX_DIR/$NGINX_FILE
+    sed -i "s%\${NGINX_TYPE}%${NGINX_TYPE}%g" $NGINX_DIR/$NGINX_FILE
     sed -i "s%\${DX_SERVICE_NAME}%${DX_SERVICE_NAME}%g" $NGINX_DIR/$NGINX_FILE
     sed -i "s%\${DX_SERVICE_INSTANCE_NAME}%${DX_SERVICE_INSTANCE_NAME}%g" $NGINX_DIR/$NGINX_FILE
     sed -i "s%\${DX_ENV_ID}%${DX_ENV_ID}%g" $NGINX_DIR/$NGINX_FILE

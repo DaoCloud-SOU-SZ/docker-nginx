@@ -69,7 +69,7 @@ RUN set -ex \
 
 FROM nginx:1.21.5
 
-ENV NGINX=nginx \
+ENV NGINX_TYPE=nginx \
     NGINX_DIR=/etc/nginx \
     NGINX_FILE=nginx.conf
 

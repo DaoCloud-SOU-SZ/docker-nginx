@@ -13,7 +13,7 @@ RUN chmod +x run.sh && \
 # FROM nginx:1.21.4
 FROM openresty/openresty:1.19.9.1-buster
 
-ENV NGINX=openresty \
+ENV NGINX_TYPE=openresty \
     NGINX_DIR=/etc/openresty \
     NGINX_FILE=nginx.conf
 
