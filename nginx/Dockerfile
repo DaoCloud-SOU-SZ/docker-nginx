@@ -90,6 +90,7 @@ RUN set -ex \
     # add skywalking-nginx-lua and custom file
     && mkdir -p /var/run/nginx \
     && mkdir -p /usr/local/lib/lua/5.1 \
+    && mkdir -p /usr/local/share/lua/5.1 \
     && mv /tmp/packages/nginx.conf /nginx.conf \
     && mv /tmp/packages/run.sh /run.sh \
     && mv /tmp/packages/skywalking-nginx-lua /skywalking-nginx-lua \
