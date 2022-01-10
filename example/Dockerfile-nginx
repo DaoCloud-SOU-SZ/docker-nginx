@@ -1,0 +1,6 @@
+FROM 10.95.35.98/library/nginx:1.20.2-sw-r4
+
+ENV LANG=C.UTF-8 \
+    DIST_NAME=dist
+
+COPY $DIST_NAME/ /usr/share/nginx/html/
